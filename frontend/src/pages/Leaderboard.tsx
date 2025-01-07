@@ -1,14 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { ThumbsUp, Share2, MessageCircle, Eye, ArrowUp, ArrowDown, LucideIcon } from 'lucide-react';
 
-// Enum for available time ranges
-enum TimeRange {
-  Day = 'day',
-  Week = 'week',
-  Month = 'month',
-  Year = 'year'
-}
-
 // Enum for sort directions
 enum SortDirection {
   Ascending = 'asc',
@@ -57,7 +49,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
   // State with proper typing
   const [sortField, setSortField] = useState<SortableField>('rank');
   const [sortDirection, setSortDirection] = useState<SortDirection>(SortDirection.Ascending);
-  const [_selectedTimeRange, _setSelectedTimeRange] = useState<TimeRange>(TimeRange.Week);
   const [expandedPost, setExpandedPost] = useState<number | null>(null);
 
   // Theme variables with specific string literal types
@@ -109,7 +100,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
 
   // Type-safe metric renderer
   const renderMetric = useCallback(({ icon: Icon, value, label, color }: MetricData) => (
-    <div className="flex flex-col items-center p-3 bg-opacity-10 rounded-lg transition-all duration-200 hover:bg-opacity-20">
+    <div className="flex flex-col items-center p-3 transition-all duration-200 rounded-lg bg-opacity-10 hover:bg-opacity-20">
       <Icon className={`w-5 h-5 ${color}`} />
       <span className="mt-1 text-lg font-bold">{value.toLocaleString()}</span>
       <span className="text-sm">{label}</span>
@@ -127,7 +118,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
   return (
     <div className={`px-4 py-8 mt-20 min-h-screen ${bgColor} sm:px-6 lg:px-8`}>
       <div className="mx-auto max-w-7xl">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center justify-between mb-8">
           <h1 className={`text-3xl font-bold ${textColor}`}>Leaderboard</h1>
         </div>
         
@@ -141,7 +132,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
                 className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${borderColor} ${cardBgColor} hover:scale-105`}
                 onClick={() => handlePostClick(post.id)}
               >
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <span className={`text-3xl font-bold ${rankStyles[post.rank - 1].color}`}>
                       {rankStyles[post.rank - 1].emoji}
@@ -177,8 +168,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
                       Rank
                       {sortField === 'rank' && (
                         sortDirection === SortDirection.Ascending ? 
-                          <ArrowUp className="ml-1 w-4 h-4" /> : 
-                          <ArrowDown className="ml-1 w-4 h-4" />
+                          <ArrowUp className="w-4 h-4 ml-1" /> : 
+                          <ArrowDown className="w-4 h-4 ml-1" />
                       )}
                     </div>
                   </th>
@@ -189,12 +180,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
                       className={`p-4 text-right cursor-pointer ${textColor}`}
                       onClick={() => handleSort(field)}
                     >
-                      <div className="flex justify-end items-center">
+                      <div className="flex items-center justify-end">
                         {field.charAt(0).toUpperCase() + field.slice(1)}
                         {sortField === field && (
                           sortDirection === SortDirection.Ascending ? 
-                            <ArrowUp className="ml-1 w-4 h-4" /> : 
-                            <ArrowDown className="ml-1 w-4 h-4" />
+                            <ArrowUp className="w-4 h-4 ml-1" /> : 
+                            <ArrowDown className="w-4 h-4 ml-1" />
                         )}
                       </div>
                     </th>

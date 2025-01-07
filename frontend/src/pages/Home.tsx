@@ -30,15 +30,15 @@ const Home: React.FC = () => {
                     />
                     <Route
                         path="/analytics"
-                        element={<Analytics darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                        element={<Analytics darkMode={darkMode} />}
                     />
                     <Route
                         path="/leaderboard"
-                        element={<Leaderboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                        element={<Leaderboard darkMode={darkMode} />}
                     />
                     <Route
                         path="/health"
-                        element={<Health darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                        element={<Health darkMode={darkMode} />}
                     />
                 </Routes>
             </div>

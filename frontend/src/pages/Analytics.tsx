@@ -87,7 +87,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     <div className={`px-4 py-8 mt-20 min-h-screen ${bgColor} sm:px-6 lg:px-8`}>
       <div className="mx-auto max-w-7xl">
         <h1 className={`mb-8 text-3xl font-bold ${textColor}`}>Analytics Dashboard</h1>
-        
+
         {/* Post Analytics Section */}
         <section className="mb-12">
           <h2 className={`mb-6 text-2xl font-semibold ${textColor}`}>Post Analytics</h2>
@@ -101,7 +101,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 <Bar options={chartOptions} data={engagementData} />
               </div>
             </div>
-            
+
             <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
               <div className="flex items-center mb-4">
                 <Clock className={`mr-2 w-6 h-6 ${textColor}`} />
@@ -111,38 +111,38 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 <Line options={chartOptions} data={timeOfPostData} />
               </div>
             </div>
-            
+
             <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
               <div className="flex items-center mb-4">
                 <Lightbulb className={`mr-2 w-6 h-6 ${textColor}`} />
                 <h3 className={`text-lg font-medium ${textColor}`}>Content Insights</h3>
               </div>
               <ul className={`mt-4 space-y-4 ${secondaryTextColor}`}>
-                <li className="flex items-center p-3 bg-green-500 bg-opacity-10 rounded-lg">
-                  <TrendingUp className="mr-3 w-5 h-5 text-green-500" />
+                <li className="flex items-center p-3 bg-green-500 rounded-lg bg-opacity-10">
+                  <TrendingUp className="w-5 h-5 mr-3 text-green-500" />
                   <span>Video posts increased engagement by 25%</span>
                 </li>
-                <li className="flex items-center p-3 bg-red-500 bg-opacity-10 rounded-lg">
-                  <Heart className="mr-3 w-5 h-5 text-red-500" />
+                <li className="flex items-center p-3 bg-red-500 rounded-lg bg-opacity-10">
+                  <Heart className="w-5 h-5 mr-3 text-red-500" />
                   <span>Posts with images get 2x more likes</span>
                 </li>
-                <li className="flex items-center p-3 bg-blue-500 bg-opacity-10 rounded-lg">
-                  <Share2 className="mr-3 w-5 h-5 text-blue-500" />
+                <li className="flex items-center p-3 bg-blue-500 rounded-lg bg-opacity-10">
+                  <Share2 className="w-5 h-5 mr-3 text-blue-500" />
                   <span>Threads receive 3x more shares</span>
                 </li>
-                <li className="flex items-center p-3 bg-yellow-500 bg-opacity-10 rounded-lg">
-                  <MessageCircle className="mr-3 w-5 h-5 text-yellow-500" />
+                <li className="flex items-center p-3 bg-yellow-500 rounded-lg bg-opacity-10">
+                  <MessageCircle className="w-5 h-5 mr-3 text-yellow-500" />
                   <span>Question posts generate 50% more comments</span>
                 </li>
               </ul>
             </div>
           </div>
         </section>
-        
+
         {/* Engagement & Sentiment Breakdown Section */}
         <section>
           <h2 className={`mb-6 text-2xl font-semibold ${textColor}`}>Engagement & Sentiment Breakdown</h2>
-          
+
           {/* Filters */}
           <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
             <div className={`p-4 rounded-xl border ${borderColor} ${cardBgColor}`}>
@@ -159,7 +159,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 <option value="custom">Custom Range</option>
               </select>
             </div>
-            
+
             <div className={`p-4 rounded-xl border ${borderColor} ${cardBgColor}`}>
               <label htmlFor="postTypeFilter" className={`block mb-2 font-medium ${secondaryTextColor}`}>Post Type</label>
               <select
@@ -174,7 +174,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 <option value="text">Text</option>
               </select>
             </div>
-            
+
             <div className={`p-4 rounded-xl border ${borderColor} ${cardBgColor}`}>
               <label htmlFor="sentimentFilter" className={`block mb-2 font-medium ${secondaryTextColor}`}>Sentiment</label>
               <select
@@ -190,7 +190,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
               </select>
             </div>
           </div>
-          
+
           {/* Charts */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
@@ -199,21 +199,21 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 <Bar options={chartOptions} data={engagementData} />
               </div>
             </div>
-            
+
             <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
               <h3 className={`mb-4 text-lg font-medium ${textColor}`}>Sentiment Analysis</h3>
               <div className="h-64">
-                <Pie 
-                  data={sentimentData} 
-                  options={{ 
-                    ...chartOptions, 
-                    plugins: { 
-                      legend: { 
+                <Pie
+                  data={sentimentData}
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      legend: {
                         position: 'bottom',
                         labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-                      } 
-                    } 
-                  }} 
+                      }
+                    }
+                  }}
                 />
               </div>
             </div>
