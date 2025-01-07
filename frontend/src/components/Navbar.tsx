@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Sun, Moon, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface NavbarProps {
   darkMode: boolean;
@@ -101,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <>
-      <div className="w-full h-20 absolute z-0" />
+      <div className="absolute z-0 w-full h-20" />
 
       <motion.nav
         initial={false}
@@ -142,6 +143,24 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
               </span>
             </motion.a>
 
+            {/* New navigation elements */}
+            <div className="flex items-center space-x-6">
+              <Link to="/analytics" className={`font-medium transition-colors duration-300 ${
+                darkMode ? "text-dark-primary hover:text-dark-secondary" : "text-light-tertiary hover:text-light-primary"
+              }`}>
+                Analytics
+              </Link>
+              <Link to="/leaderboard" className={`font-medium transition-colors duration-300 ${
+                darkMode ? "text-dark-primary hover:text-dark-secondary" : "text-light-tertiary hover:text-light-primary"
+              }`}>
+                Leaderboard
+              </Link>
+              <Link to="/health" className={`font-medium transition-colors duration-300 ${
+                darkMode ? "text-dark-primary hover:text-dark-secondary" : "text-light-tertiary hover:text-light-primary"
+              }`}>
+                Health
+              </Link>
+            </div>
             <div className="flex items-center space-x-6">
               <motion.button
                 whileHover={{ scale: 1.05 }}

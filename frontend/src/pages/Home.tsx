@@ -1,22 +1,49 @@
-import React, { useState } from 'react'
-import Hero from '../components/Hero'
-import Navbar from '../components/Navbar'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Hero from '../components/Hero';
+import Navbar from '../components/Navbar';
 import Chat from '../components/Chatbot';
+import Analytics from '../pages/Analytics';
+import Leaderboard from './Leaderboard';
+import Health from '../pages/Health';
 
 const Home: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false)
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleDarkMode = () => {
-        setDarkMode(prevMode => !prevMode)
-    }
+        setDarkMode(prevMode => !prevMode);
+    };
 
     return (
-        <div className={darkMode ? 'dark' : ''}>
-            <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-            <Hero darkMode={darkMode} />
-            <Chat darkMode={darkMode} />
-        </div>
-    )
-}
+        <Router>
+            <div className={darkMode ? 'dark' : ''}>
+                <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <>
+                                <Hero darkMode={darkMode} />
+                                <Chat darkMode={darkMode} />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/analytics"
+                        element={<Analytics darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                    />
+                    <Route
+                        path="/leaderboard"
+                        element={<Leaderboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                    />
+                    <Route
+                        path="/health"
+                        element={<Health darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+                    />
+                </Routes>
+            </div>
+        </Router>
+    );
+};
 
-export default Home
+export default Home;
