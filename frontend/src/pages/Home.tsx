@@ -6,6 +6,7 @@ import Chat from '../components/Chatbot';
 import Analytics from '../pages/Analytics';
 import Leaderboard from './Leaderboard';
 import Health from '../pages/Health';
+import Content from './Content';
 
 const Home: React.FC = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -39,6 +40,11 @@ const Home: React.FC = () => {
                     <Route
                         path="/health"
                         element={<Health darkMode={darkMode} />}
+                    />
+                    <Route
+                        path="/content"
+                        // @ts-ignore
+                        element={<Content darkMode={darkMode} />}
                     />
                 </Routes>
             </div>
