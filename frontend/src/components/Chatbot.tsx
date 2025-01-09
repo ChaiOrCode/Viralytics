@@ -53,8 +53,8 @@ const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { darkMode: 
   return (
     <input
       className={`flex px-3 py-2 w-full h-10 text-sm rounded-full border backdrop-blur-sm sm:h-12 sm:px-4 placeholder:text-text-dim focus:outline-none focus:ring-2 focus:border-transparent ${darkMode
-          ? 'bg-dark-background/80 border-dark-primary focus:ring-dark-primary text-dark-primary'
-          : 'bg-light-background/80 border-light-tertiary focus:ring-light-tertiary text-light-tertiary'
+        ? 'bg-dark-background/80 border-dark-primary focus:ring-dark-primary text-dark-primary'
+        : 'bg-light-background/80 border-light-tertiary focus:ring-light-tertiary text-light-tertiary'
         } ${className}`}
       {...props}
     />
@@ -70,8 +70,8 @@ const ThinkingIndicator: React.FC<{ darkMode: boolean }> = ({ darkMode }) => (
     className="flex justify-start"
   >
     <div className={`${darkMode
-        ? 'bg-gradient-to-r from-dark-primary to-dark-tertiary'
-        : 'bg-gradient-to-r from-light-primary to-light-tertiary'
+      ? 'bg-gradient-to-r from-dark-primary to-dark-tertiary'
+      : 'bg-gradient-to-r from-light-primary to-light-tertiary'
       } p-2 sm:p-3 rounded-2xl max-w-[70%]`}>
       <motion.div
         animate={{ opacity: [0.5, 1, 0.5] }}
@@ -214,14 +214,14 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
           >
             <motion.div
               className={`flex justify-between items-center p-4 text-white rounded-t-3xl cursor-move sm:p-6 ${darkMode
-                  ? 'bg-gradient-to-r from-dark-primary to-dark-tertiary'
-                  : 'bg-gradient-to-r from-light-primary to-light-tertiary'
+                ? 'bg-gradient-to-r from-dark-primary to-dark-tertiary'
+                : 'bg-gradient-to-r from-light-primary to-light-tertiary'
                 }`}
             >
               <div className="flex items-center space-x-3">
                 <div className={`flex justify-center items-center w-10 h-10 text-base font-bold rounded-full shadow-inner sm:w-12 sm:h-12 sm:text-lg backdrop-blur-sm ${darkMode
-                    ? 'bg-dark-background/80 text-dark-primary'
-                    : 'bg-light-background/80 text-light-tertiary'
+                  ? 'bg-dark-background/80 text-dark-primary'
+                  : 'bg-light-background/80 text-light-tertiary'
                   }`}>
                   AI
                 </div>
@@ -250,8 +250,8 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
             <div className="overflow-hidden relative flex-1">
               <div className="absolute inset-0 bg-noise opacity-85" />
               <div className={`absolute inset-0 ${darkMode
-                  ? 'bg-gradient-to-br from-dark-tertiary/90 via-dark-background to-dark-secondary/90'
-                  : 'bg-gradient-to-br from-light-tertiary/90 via-light-background to-light-secondary/90'
+                ? 'bg-gradient-to-br from-dark-tertiary/90 via-dark-background to-dark-secondary/90'
+                : 'bg-gradient-to-br from-light-tertiary/90 via-light-background to-light-secondary/90'
                 }`} />
               <div className="overflow-y-auto relative p-4 space-y-4 h-full sm:p-6">
                 <AnimatePresence>
@@ -266,12 +266,12 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
                     >
                       <div
                         className={`max-w-[80%] p-3 sm:p-4 rounded-2xl backdrop-blur-sm shadow-lg ${message.sender === 'user'
-                            ? darkMode
-                              ? 'bg-gradient-to-br from-dark-primary to-dark-secondary text-dark-background'
-                              : 'bg-gradient-to-br from-light-primary to-light-secondary text-light-background'
-                            : darkMode
-                              ? 'bg-dark-background/80 text-dark-primary border border-dark-secondary/20'
-                              : 'bg-light-background/80 text-light-tertiary border border-light-secondary/20'
+                          ? darkMode
+                            ? 'bg-gradient-to-br from-dark-primary to-dark-secondary text-dark-background'
+                            : 'bg-gradient-to-br from-light-primary to-light-secondary text-light-background'
+                          : darkMode
+                            ? 'bg-dark-background/80 text-dark-primary border border-dark-secondary/20'
+                            : 'bg-light-background/80 text-light-tertiary border border-light-secondary/20'
                           }`}
                       >
                         {message.text}
@@ -285,8 +285,8 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
             </div>
 
             <div className={`relative p-4 sm:p-6 ${darkMode
-                ? 'bg-gradient-to-t to-transparent from-dark-background via-dark-background'
-                : 'bg-gradient-to-t to-transparent from-light-background via-light-background'
+              ? 'bg-gradient-to-t to-transparent from-dark-background via-dark-background'
+              : 'bg-gradient-to-t to-transparent from-light-background via-light-background'
               }`}>
               <div className="flex mb-4 space-x-2">
                 <Input
@@ -302,8 +302,8 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
                   onClick={handleSendMessage}
                   disabled={isLoading}
                   className={`shadow-lg transition-all duration-300 ${darkMode
-                      ? 'bg-gradient-to-r from-dark-primary to-dark-secondary hover:from-dark-secondary hover:to-dark-primary'
-                      : 'bg-gradient-to-r from-light-primary to-light-secondary hover:from-light-secondary hover:to-light-primary'
+                    ? 'bg-gradient-to-r from-dark-primary to-dark-secondary hover:from-dark-secondary hover:to-dark-primary'
+                    : 'bg-gradient-to-r from-light-primary to-light-secondary hover:from-light-secondary hover:to-light-primary'
                     }`}
                   darkMode={darkMode}
                 >
@@ -318,8 +318,8 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
                     size="sm"
                     onClick={() => setInput(question)}
                     className={`text-xs rounded-full border transition-all duration-300 backdrop-blur-sm ${darkMode
-                        ? 'border-dark-primary/20 hover:bg-dark-background/50 hover:border-dark-primary'
-                        : 'border-light-primary/20 hover:bg-light-background/50 hover:border-light-primary'
+                      ? 'border-dark-primary/20 hover:bg-dark-background/50 hover:border-dark-primary'
+                      : 'border-light-primary/20 hover:bg-light-background/50 hover:border-light-primary'
                       }`}
                     darkMode={darkMode}
                   >
@@ -337,10 +337,7 @@ const TwitterAnalyticsChatbot: React.FC<TwitterAnalyticsChatbotProps> = ({ darkM
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className={`p-3 text-white rounded-full shadow-lg transition-all duration-300 sm:p-4 ${darkMode
-              ? 'bg-gradient-to-r transition-colors duration-500 ease-in-out from-dark-primary to-dark-tertiary hover:from-dark-tertiary hover:to-dark-primary'
-              : 'bg-gradient-to-r transition-colors duration-500 ease-in-out from-light-primary to-light-tertiary hover:from-light-tertiary hover:to-light-primary'
-            } hover:shadow-xl`}
+          className="p-3 text-white bg-gradient-to-r rounded-full shadow-lg transition-colors duration-500 ease-in-out from-light-primary to-light-tertiary hover:from-light-tertiary hover:to-light-primary hover:shadow-xl sm:p-4"
         >
           <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
         </motion.button>

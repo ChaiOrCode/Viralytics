@@ -10,25 +10,25 @@ export default {
     extend: {
       colors: {
         light: {
-          primary: '#8AA3B8',
-          secondary: '#DCE5ED',
-          tertiary: '#1A5885',
-          background: '#F2F6FA'
+          primary: '#7A92A5',
+          secondary: '#BCCEDD',
+          tertiary: '#145168',
+          background: '#E6EEF5'
         },
         dark: {
-          primary: '#C8D5E2',
-          secondary: '#6989A3',
-          tertiary: '#184C74',
-          background: '#1d304a'
+          primary: '#C0C8D4',
+          secondary: '#5E78A2',
+          tertiary: '#163C5C',
+          background: '#172739'
         },
         text: {
-          dark:' #376f99',
+          dark: '#376f99',
           light: '#6989A3',
           dim: '#A0B3C0',
           fade: '#B0C0D0'
         },
         nav: {
-          dark: '#1d304a',
+          dark: '#172739',
           light: '#F2F6FA'
         }
     },
