@@ -48,25 +48,6 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     fetchInsights();
   }, []);
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-      },
-      x: {
-        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-      }
-    },
-    plugins: {
-      legend: {
-        labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-      }
-    }
-  };
-
   const engagementData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
@@ -101,14 +82,59 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     ],
   };
 
-  const sentimentData = {
-    labels: ['Positive', 'Neutral', 'Negative'],
-    datasets: [
-      {
-        data: [60, 30, 10],
-        backgroundColor: ['#4CAF50', '#FFA000', '#F44336'],
+  const [sentimentData, setSentimentData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSentimentData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/sentiment-analysis", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tweet_id: "1876977156196045058" }), // Use the actual tweet_id
+        });
+
+        const data = await response.json();
+        
+        // Extracting the sentiment values
+        const sentiment = data.response.sentiment;
+        
+        // Setting the sentiment data for the chart
+        setSentimentData({
+          labels: ['Positive', 'Neutral', 'Negative'],
+          datasets: [
+            {
+              data: [sentiment.positive, sentiment.neutral, sentiment.negative],
+              backgroundColor: ['#4CAF50', '#FFA000', '#F44336'],
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching sentiment data:", error);
+      }
+    };
+
+    fetchSentimentData();
+  }, []);
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
       },
-    ],
+      x: {
+        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+      }
+    }
   };
 
   return (
@@ -233,21 +259,25 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 </div>
               </div>
 
-              <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
-                <h3 className={`mb-4 text-lg font-medium ${textColor}`}>Sentiment Analysis</h3>
+              <div className={`p-6 rounded-xl border transition-transform duration-200 hover:scale-105`}>
+                <h3 className={`mb-4 text-lg font-medium`}>Sentiment Analysis</h3>
                 <div className="h-64">
-                  <Pie
-                    data={sentimentData}
-                    options={{
-                      ...chartOptions,
-                      plugins: {
-                        legend: {
-                          position: 'bottom',
-                          labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+                  {sentimentData ? (
+                    <Pie
+                      data={sentimentData}
+                      options={{
+                        ...chartOptions,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+                          }
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    />
+                  ) : (
+                    <p>Loading sentiment data...</p>
+                  )}
                 </div>
               </div>
             </div>
