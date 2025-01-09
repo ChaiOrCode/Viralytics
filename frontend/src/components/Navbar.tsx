@@ -116,7 +116,7 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
           </motion.a>
 
           <div className="hidden items-center space-x-2 md:flex lg:space-x-4 xl:space-x-6">
-            {['Analytics', 'Leaderboard', 'Health'].map((item) => (
+            {['Analytics', 'Leaderboard', 'Health', 'Content'].map((item) => (
               <Link
                 key={item}
                 to={`/${item.toLowerCase()}`}
