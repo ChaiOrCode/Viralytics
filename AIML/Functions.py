@@ -152,9 +152,10 @@ def retrieveTweetComments(TWEET_ID = "1866869309277937937"):
         for i, tweet in enumerate(top_50, 1):
             tweet_text.append(tweet['text'])
             # Likes: tweet['public_metrics']['like_count']
+            return str(tweet_text)
     else:
         print(f"Error: {response.status_code}, {response.text}")
-    return str(tweet_text)
+        return ""
 
 def run_flow_sentimentAnalysis(message: str,) -> dict:
     api_url = f"{BASE_API_URL}/lf/{LANGFLOW_ID}/api/v1/run/{FLOW_ID_5}"
