@@ -54,18 +54,45 @@ const AnalysisResult: React.FC<{ analysis: PostAnalysisData }> = ({ analysis }) 
   </div>
 );
 
+interface GeneratedPostData {
+  response: string;
+}
+
 const PostGenerator: React.FC<{
   generatedPost: GeneratedPostData | null;
   onGenerateClick: () => void;
   loading: boolean;
-}> = ({ generatedPost, onGenerateClick, loading }) => {
+}> = () => {
   const [prompt, setPrompt] = useState('');
+  const [generatedPost, setGeneratedPost] = useState<GeneratedPostData | null>(null);
+  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(prompt);
+    navigator.clipboard.writeText(generatedPost?.response || '');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const onGenerateClick = async () => {
+    if (!prompt) return;
+    setLoading(true);
+    try {
+      const response = await fetch("https://pythonbackend-n73y.onrender.com/api/content-suggestor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: prompt }),
+      });
+
+      const data = await response.json();
+      setGeneratedPost(data); // Update state with API response
+    } catch (error) {
+      console.error("Error fetching post analysis:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -98,12 +125,12 @@ const PostGenerator: React.FC<{
         <span>{loading ? 'Generating...' : 'Generate Post Analysis'}</span>
       </button>
 
-      {generatedPost && prompt && (
+      {generatedPost && (
         <div className="relative mt-4">
           <div className="w-full min-h-[100px] p-4 rounded-xl border
             bg-light-secondary/5 text-light-tertiary border-light-primary/10
             dark:bg-dark-secondary/5 dark:text-dark-primary dark:border-dark-primary/10">
-            {prompt}
+            {generatedPost.response}
           </div>
           <button
             onClick={handleCopy}
@@ -120,8 +147,68 @@ const PostGenerator: React.FC<{
   );
 };
 
+
+const ContentSuggestion: React.FC = () => {
+  const [suggestion, setSuggestion] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [generatedSuggestion, setGeneratedSuggestion] = useState<string | null>(null);
+
+  const fetchSuggestions = async () => {
+    if (!suggestion.trim()) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch("https://pythonbackend-n73y.onrender.com/api/content-suggestor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: suggestion }),
+      });
+
+      const data = await response.json();
+      setGeneratedSuggestion(data); // Assuming API response has a 'response' field
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setGeneratedSuggestion("An error occurred while fetching suggestions. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto space-y-4 max-w-2xl">
+      <textarea
+        value={suggestion}
+        onChange={(e) => setSuggestion(e.target.value)}
+        placeholder="Enter keywords for content suggestions..."
+        className="w-full min-h-[120px] p-4 rounded-xl border resize-none 
+          bg-light-secondary/10 text-light-tertiary border-light-primary/20
+          dark:bg-dark-secondary/10 dark:text-dark-primary dark:border-dark-primary/20
+          placeholder-light-primary/50 dark:placeholder-dark-secondary/50
+          focus:outline-none focus:ring-2 focus:ring-light-secondary/20 
+          dark:focus:ring-dark-secondary/20
+          hover:border-light-primary/40 dark:hover:border-dark-primary/40"
+      />
+      <button
+        onClick={fetchSuggestions}
+        disabled={loading || !suggestion.trim()}
+        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-primary dark:text-nav-light hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Zap className="w-4 h-4" />
+        <span>{loading ? 'Loading...' : 'Get Content Suggestions'}</span>
+      </button>
+      {generatedSuggestion && (
+        <div className="mt-4 p-4 rounded-xl border bg-light-secondary/5 text-light-tertiary border-light-primary/10 dark:bg-dark-secondary/5 dark:text-dark-primary dark:border-dark-primary/10">
+          {generatedSuggestion}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Content: React.FC = () => {
-  const [postAnalysis, setPostAnalysis] = useState<PostAnalysisData | null>(null);
+  const [postAnalysis, setPostAnalysis] = useState(null);
   const [generatedPost, setGeneratedPost] = useState<GeneratedPostData | null>(null);
   const [loading, setLoading] = useState(false);
   const [analysisLoading, setAnalysisLoading] = useState(false);
@@ -129,17 +216,15 @@ const Content: React.FC = () => {
   const handleAnalyze = async () => {
     setAnalysisLoading(true);
     try {
-      // Simulate API call for post time analysis
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const analysisResponse = {
-        "should_post": 1,
-        "predicted_retweets": 120,
-        "predicted_likes": 800,
-        "timestamp": "2025-01-09 19:48:59.497714",
-        "should_post_at": "2025-01-09 20:00:00",
-        "reason": "The post should be posted now as it's evening and people are likely to be active on social media, increasing the chances of engagement and reach."
-      };
-      setPostAnalysis(analysisResponse);
+      const response = await fetch('https://pythonbackend-n73y.onrender.com/api/timestamp');
+      if (!response.ok) {
+        throw new Error('Failed to fetch analysis data');
+      }
+      const analysisResponse = await response.json();
+      setPostAnalysis(JSON.parse(analysisResponse.response));
+    } catch (error) {
+      console.error('Error fetching analysis data:', error);
+      // Optional: Show an error message to the user
     } finally {
       setAnalysisLoading(false);
     }
@@ -211,7 +296,7 @@ const Content: React.FC = () => {
           <header className="flex justify-between items-center mb-8">
             <div className="flex gap-2">
               <Zap className="w-8 h-8 text-light-tertiary dark:text-dark-primary" />
-              <h1 className="text-3xl font-bold text-light-tertiary dark:text-dark-primary">Post Analyzer</h1>
+              <h1 className="text-3xl font-bold text-light-tertiary dark:text-dark-primary">Post Generator</h1>
             </div>
             <div className="flex gap-4 items-center text-light-primary dark:text-dark-secondary">
               <Clock className="w-5 h-5" />
@@ -225,6 +310,10 @@ const Content: React.FC = () => {
               onGenerateClick={handleGenerate}
               loading={loading}
             />
+          </Card>
+
+          <Card title="Content Suggestion" icon={<MessageCircle className="w-5 h-5 text-light-tertiary dark:text-dark-primary" />} className="mb-8">
+            <ContentSuggestion />
           </Card>
 
           {generatedPost && (
@@ -285,7 +374,7 @@ const Content: React.FC = () => {
               </Card>
             </div>
           </div>
-
+            
           {postAnalysis && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card title="Recommended Post Time" icon={<Clock className="w-5 h-5 text-light-tertiary dark:text-dark-primary" />}>
