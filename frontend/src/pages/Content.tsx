@@ -55,105 +55,111 @@ const AnalysisResult: React.FC<{ analysis: PostAnalysisData }> = ({ analysis }) 
 );
 
 const PostGenerator: React.FC<{
-  prompt: string;
-  setPrompt: (value: string) => void;
   generatedPost: GeneratedPostData | null;
-  handleGenerate: () => void;
-  handleCopy: () => void;
-  copied: boolean;
-}> = ({ prompt, setPrompt, generatedPost, handleGenerate, handleCopy, copied }) => (
-  <div className="mx-auto space-y-4 max-w-2xl">
-    <div className="relative group">
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Create a post for your latest update..."
-        className="w-full min-h-[120px] p-4 rounded-xl border resize-none 
-          bg-light-secondary/10 text-light-tertiary border-light-primary/20
-          dark:bg-dark-secondary/10 dark:text-dark-primary dark:border-dark-primary/20
-          placeholder-light-primary/50 dark:placeholder-dark-secondary/50
-          focus:outline-none focus:ring-2 focus:ring-light-secondary/20 
-          dark:focus:ring-dark-secondary/20
-          group-hover:border-light-primary/40 dark:group-hover:border-dark-primary/40"
-        maxLength={280}
-      />
-      <div className="absolute right-3 bottom-3 text-sm text-light-primary dark:text-dark-secondary">
-        {prompt.length}/280
-      </div>
-    </div>
-
-    <button
-      onClick={handleGenerate}
-      className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-tertiary dark:text-nav-dark hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      <Zap className="w-4 h-4" />
-      <span>Generate Post Analysis</span>
-    </button>
-
-    {generatedPost && (
-      <div className="relative mt-4 group">
-        <textarea
-          readOnly
-          value={prompt}
-          className="w-full min-h-[100px] p-4 rounded-xl border resize-none
-            bg-light-secondary/5 text-light-tertiary border-light-primary/10
-            dark:bg-dark-secondary/5 dark:text-dark-primary dark:border-dark-primary/10"
-        />
-        <button
-          onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded-lg transition duration-300 bg-light-secondary/10 hover:bg-light-secondary/20 dark:bg-dark-secondary/10 dark:hover:bg-dark-secondary/20"
-        >
-          {copied ?
-            <Check className="w-4 h-4 text-green-500" /> :
-            <Copy className="w-4 h-4 text-light-primary dark:text-dark-primary" />
-          }
-        </button>
-      </div>
-    )}
-  </div>
-);
-
-const Content: React.FC = () => {
+  onGenerateClick: () => void;
+  loading: boolean;
+}> = ({ generatedPost, onGenerateClick, loading }) => {
   const [prompt, setPrompt] = useState('');
-  const [postAnalysis, setPostAnalysis] = useState<PostAnalysisData | null>(null);
-  const [generatedPost, setGeneratedPost] = useState<GeneratedPostData | null>(null);
-  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  const handleAnalyze = async () => {
-    setLoading(true);
-    // Simulate API call for post time analysis
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const analysisResponse = {
-      "should_post": 1,
-      "predicted_retweets": 120,
-      "predicted_likes": 800,
-      "timestamp": "2025-01-09 19:48:59.497714",
-      "should_post_at": "2025-01-09 20:00:00",
-      "reason": "The post should be posted now as it's evening and people are likely to be active on social media, increasing the chances of engagement and reach."
-    };
-    setPostAnalysis(analysisResponse);
-    setLoading(false);
-  };
-
-  const handleGenerate = async () => {
-    setLoading(true);
-    // Simulate API call for post generation
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const generatedResponse = {
-      "predicted_likes": 64,
-      "predicted_retweets": 13,
-      "predicted_engagement_rate": 0.0003,
-      "explanation": "Based on the provided data, the most similar post in context of user input is 'my recent internship'. This post has a neutral sentiment and has received 64 likes and 13 retweets. Considering the historical engagement trends for similar content, I predict that the user's post idea will receive approximately 64 likes and 13 retweets. The predicted engagement rate is 0.0003, which is relatively low compared to other posts in the dataset. This is because the user's post idea is not directly relevant to the most similar post, and the engagement metrics for similar content are not exceptionally high. However, the user's post idea has the potential to be unique and viral, which could lead to higher engagement metrics."
-    };
-    setGeneratedPost(generatedResponse);
-    setLoading(false);
-  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="mx-auto space-y-4 max-w-2xl">
+      <div className="relative">
+        <textarea
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Create a post for your latest update..."
+          className="w-full min-h-[120px] p-4 rounded-xl border resize-none 
+            bg-light-secondary/10 text-light-tertiary border-light-primary/20
+            dark:bg-dark-secondary/10 dark:text-dark-primary dark:border-dark-primary/20
+            placeholder-light-primary/50 dark:placeholder-dark-secondary/50
+            focus:outline-none focus:ring-2 focus:ring-light-secondary/20 
+            dark:focus:ring-dark-secondary/20
+            hover:border-light-primary/40 dark:hover:border-dark-primary/40"
+          maxLength={280}
+        />
+        <div className="absolute right-3 bottom-3 text-sm text-light-primary dark:text-dark-secondary">
+          {prompt.length}/280
+        </div>
+      </div>
+
+      <button
+        onClick={onGenerateClick}
+        disabled={loading || prompt.length === 0}
+        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-tertiary dark:text-nav-dark hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Zap className="w-4 h-4" />
+        <span>{loading ? 'Generating...' : 'Generate Post Analysis'}</span>
+      </button>
+
+      {generatedPost && prompt && (
+        <div className="relative mt-4">
+          <div className="w-full min-h-[100px] p-4 rounded-xl border
+            bg-light-secondary/5 text-light-tertiary border-light-primary/10
+            dark:bg-dark-secondary/5 dark:text-dark-primary dark:border-dark-primary/10">
+            {prompt}
+          </div>
+          <button
+            onClick={handleCopy}
+            className="absolute top-3 right-3 p-2 rounded-lg transition duration-300 bg-light-secondary/10 hover:bg-light-secondary/20 dark:bg-dark-secondary/10 dark:hover:bg-dark-secondary/20"
+          >
+            {copied ?
+              <Check className="w-4 h-4 text-green-500" /> :
+              <Copy className="w-4 h-4 text-light-primary dark:text-dark-primary" />
+            }
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Content: React.FC = () => {
+  const [postAnalysis, setPostAnalysis] = useState<PostAnalysisData | null>(null);
+  const [generatedPost, setGeneratedPost] = useState<GeneratedPostData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+
+  const handleAnalyze = async () => {
+    setAnalysisLoading(true);
+    try {
+      // Simulate API call for post time analysis
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const analysisResponse = {
+        "should_post": 1,
+        "predicted_retweets": 120,
+        "predicted_likes": 800,
+        "timestamp": "2025-01-09 19:48:59.497714",
+        "should_post_at": "2025-01-09 20:00:00",
+        "reason": "The post should be posted now as it's evening and people are likely to be active on social media, increasing the chances of engagement and reach."
+      };
+      setPostAnalysis(analysisResponse);
+    } finally {
+      setAnalysisLoading(false);
+    }
+  };
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    try {
+      // Simulate API call for post generation
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const generatedResponse = {
+        "predicted_likes": 64,
+        "predicted_retweets": 13,
+        "predicted_engagement_rate": 0.0003,
+        "explanation": "Based on the provided data, the most similar post in context of user input is 'my recent internship'. This post has a neutral sentiment and has received 64 likes and 13 retweets. Considering the historical engagement trends for similar content, I predict that the user's post idea will receive approximately 64 likes and 13 retweets. The predicted engagement rate is 0.0003, which is relatively low compared to other posts in the dataset. This is because the user's post idea is not directly relevant to the most similar post, and the engagement metrics for similar content are not exceptionally high. However, the user's post idea has the potential to be unique and viral, which could lead to higher engagement metrics."
+      };
+      setGeneratedPost(generatedResponse);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatDateTime = (dateTimeString: string) => {
@@ -203,7 +209,7 @@ const Content: React.FC = () => {
       <div className="relative px-4 py-8 mt-20 min-h-screen dark:bg-dark-background bg-light-background bg-noise sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <header className="flex justify-between items-center mb-8">
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Zap className="w-8 h-8 text-light-tertiary dark:text-dark-primary" />
               <h1 className="text-3xl font-bold text-light-tertiary dark:text-dark-primary">Post Analyzer</h1>
             </div>
@@ -215,12 +221,9 @@ const Content: React.FC = () => {
 
           <Card title="Post Generator" icon={<Send className="w-5 h-5 text-light-tertiary dark:text-dark-primary" />} className="mb-8">
             <PostGenerator
-              prompt={prompt}
-              setPrompt={setPrompt}
               generatedPost={generatedPost}
-              handleGenerate={handleGenerate}
-              handleCopy={handleCopy}
-              copied={copied}
+              onGenerateClick={handleGenerate}
+              loading={loading}
             />
           </Card>
 
@@ -273,10 +276,10 @@ const Content: React.FC = () => {
                   </div>
                   <button
                     onClick={handleAnalyze}
-                    disabled={loading}
+                    disabled={analysisLoading}
                     className="px-4 py-2 w-full font-medium rounded-lg shadow-md transition duration-300 bg-light-primary dark:bg-dark-primary text-nav-light dark:text-nav-dark hover:opacity-85 disabled:opacity-50"
                   >
-                    {loading ? 'Analyzing...' : 'Analyze Timing'}
+                    {analysisLoading ? 'Analyzing...' : 'Analyze Timing'}
                   </button>
                 </div>
               </Card>
@@ -299,6 +302,14 @@ const Content: React.FC = () => {
                 <p className="text-3xl font-bold text-light-tertiary dark:text-dark-primary">
                   {postAnalysis.predicted_likes}
                 </p>
+              </Card>
+              <Card title="Analysis Summary" icon={<Info className="w-5 h-5 text-light-tertiary dark:text-dark-primary" />}>
+                <p className="text-sm text-light-tertiary dark:text-dark-primary line-clamp-4">
+                  {postAnalysis.reason}
+                </p>
+                <button className="mt-2 text-sm text-light-primary dark:text-dark-secondary hover:underline">
+                  View Details
+                </button>
               </Card>
             </div>
           )}
