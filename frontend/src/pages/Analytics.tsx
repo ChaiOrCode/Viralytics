@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import { BarChart, Clock, Lightbulb, TrendingUp, Heart, Share2, MessageCircle, ChartBarIncreasingIcon, Target } from 'lucide-react';
@@ -19,6 +19,40 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
   const secondaryTextColor = darkMode ? 'text-dark-secondary' : 'text-light-primary';
   const borderColor = darkMode ? 'border-dark-primary/20' : 'border-light-primary/20';
   const cardBgColor = darkMode ? 'bg-dark-primary/10' : 'bg-light-primary/10';
+
+   interface Insight {
+  type: string;
+  data: string;
+}
+
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const types = ["Reels", "Carousels", "Video", "Threads"];
+
+  useEffect(() => {
+    const fetchInsights = async () => {
+      const insightsData: Insight[] = [];
+      for (const type of types) {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/api/post-type", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: type }),
+          });
+
+          const data = await response.text();
+          insightsData.push({ type, data });
+        } catch (error) {
+          console.error(`Error fetching data for ${type}:`, error);
+        }
+      }
+
+      setInsights(insightsData);
+    };
+
+    fetchInsights();
+  }, []);
 
   const chartOptions = {
     responsive: true,
