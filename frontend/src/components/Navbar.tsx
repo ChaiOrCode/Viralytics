@@ -1,19 +1,24 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Sun, Moon, LogOut, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMode: () => void }) => {
+interface NavbarProps {
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
   const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const userMenuRef = useRef(null);
-  const notificationRef = useRef(null);
-  const mobileMenuRef = useRef(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const notifications = [
     { id: 1, text: "Welcome back! 👋", time: "just now" },
@@ -22,20 +27,28 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
   ];
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    console.log('Navbar component mounted');
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 20;
+      setIsScrolled(scrolled);
+      console.log('Scroll position changed, isScrolled:', scrolled);
+    };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      console.log('Navbar component will unmount');
+    };
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event : MouseEvent) => {
-      if (userMenuRef.current && !(userMenuRef.current as HTMLElement).contains(event.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
       }
-      if (notificationRef.current && !(notificationRef.current as HTMLElement).contains(event.target as Node)) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
-      if (mobileMenuRef.current && !(mobileMenuRef.current as HTMLElement).contains(event.target as Node)) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -45,10 +58,24 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
   }, []);
 
   const handleRouteChange = () => {
+    console.log('Route changed');
     setIsMobileMenuOpen(false);
     setShowUserMenu(false);
     setShowNotifications(false);
   };
+
+  const handleLogin = () => {
+    console.log('Initiating login');
+    loginWithRedirect();
+  };
+
+  const handleLogout = () => {
+    console.log('Initiating logout');
+    // @ts-ignore 
+    logout({ returnTo: window.location.origin });
+  };
+
+  console.log('Rendering Navbar component, isAuthenticated:', isAuthenticated);
 
   const menuVariants = {
     hidden: { opacity: 0, y: -20, scale: 0.95 },
@@ -71,7 +98,7 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
     exit: { x: '100%', opacity: 0, transition: { duration: 0.2 } }
   };
 
-  const UserProfile = () => {
+  const UserProfile: React.FC = () => {
     if (!user) return null;
     const userImage = user.picture || 'https://via.placeholder.com/150';
 
@@ -230,7 +257,7 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             onClick={() => {
-                              logout();
+                              handleLogout();
                               handleRouteChange();
                             }}
                             className={`flex items-center w-full p-2 sm:p-3 text-sm sm:text-base rounded-lg transition-all duration-300 ${darkMode
@@ -251,7 +278,7 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => loginWithRedirect()}
+                onClick={handleLogin}
                 className={`px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 text-sm sm:text-base font-medium rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl ${darkMode
                     ? "bg-dark-primary text-dark-background hover:bg-dark-secondary"
                     : "bg-light-tertiary text-light-background hover:bg-light-primary"
@@ -318,7 +345,7 @@ const Navbar = ({ darkMode, toggleDarkMode } : { darkMode: boolean, toggleDarkMo
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   onClick={() => {
-                    logout();
+                    handleLogout();
                     handleRouteChange();
                   }}
                   className={`

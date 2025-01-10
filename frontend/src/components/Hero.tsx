@@ -16,7 +16,11 @@ const Hero: React.FC<HeroProps> = ({ darkMode }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    console.log('Hero component mounted');
     setIsVisible(true);
+    return () => {
+      console.log('Hero component will unmount');
+    };
   }, []);
 
   const heroVariants = {
@@ -71,6 +75,7 @@ const Hero: React.FC<HeroProps> = ({ darkMode }) => {
   ];
 
   const launchConfetti = () => {
+    console.log('Launching confetti');
     const colors = darkMode 
       ? ['#C8D5E2', '#6989A3', '#184C74']
       : ['#8AA3B8', '#DCE5ED', '#1A5885'];
@@ -83,6 +88,13 @@ const Hero: React.FC<HeroProps> = ({ darkMode }) => {
       ticks: 200,
     });
   };
+
+  const handleLogin = () => {
+    console.log('Initiating login from Hero');
+    loginWithRedirect();
+  };
+
+  console.log('Rendering Hero component, isAuthenticated:', isAuthenticated);
 
   return (
     <section className={`relative min-h-screen pt-20 pb-20 md:pt-32 md:pb-40 overflow-hidden ${
@@ -169,8 +181,7 @@ const Hero: React.FC<HeroProps> = ({ darkMode }) => {
           className="flex flex-col gap-4 justify-center items-center mb-12 md:mb-20 sm:flex-row"
         >
           {!isAuthenticated ? (
-
-            <QuantumButton darkMode={darkMode} onClick={() => loginWithRedirect()}>
+            <QuantumButton darkMode={darkMode} onClick={handleLogin}>
               Get Started
             </QuantumButton>
           ) : (
