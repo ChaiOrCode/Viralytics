@@ -167,7 +167,7 @@ const ContentSuggestion: React.FC = () => {
       });
 
       const data = await response.json();
-      setGeneratedSuggestion(data); // Assuming API response has a 'response' field
+      setGeneratedSuggestion(data.response); // Assuming API response has a 'response' field
     } catch (error) {
       console.error("Error fetching suggestions:", error);
       setGeneratedSuggestion("An error occurred while fetching suggestions. Please try again.");

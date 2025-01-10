@@ -26,7 +26,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     // Function to fetch insights
     const fetchInsights = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/post-type", {
+        const response = await fetch("https://pythonbackend-n73y.onrender.com/api/post-type", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
   useEffect(() => {
     const fetchSentimentData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/sentiment-analysis", {
+        const response = await fetch("https://pythonbackend-n73y.onrender.com/api/sentiment-analysis", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

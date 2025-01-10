@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ThumbsUp, Share2, MessageCircle, Eye, ArrowUp, ArrowDown, LucideIcon, TrendingUp, Award } from 'lucide-react';
 
 enum SortDirection {
@@ -16,7 +16,7 @@ interface Post {
   readonly title: string;
   readonly likes: number;
   readonly shares: number;
-  readonly comments: number;
+  readonly followers: number;
   readonly reach: number;
   readonly trend?: number;
 }
@@ -47,14 +47,42 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
   const borderColor = darkMode ? 'border-dark-primary/20' : 'border-light-primary/20';
   const cardBgColor = darkMode ? 'bg-dark-primary/10' : 'bg-light-primary/10';
   const hoverBgColor = darkMode ? 'hover:bg-dark-primary/20' : 'hover:bg-light-primary/20';
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const posts: readonly Post[] = [
-    { id: 1, rank: 1, title: 'Top Performing Post 1', likes: 1500, shares: 500, comments: 200, reach: 10000, trend: 15 },
-    { id: 2, rank: 2, title: 'Runner-up Post', likes: 1200, shares: 400, comments: 150, reach: 8000, trend: 8 },
-    { id: 3, rank: 3, title: 'Third Place Post', likes: 1000, shares: 300, comments: 100, reach: 7000, trend: -5 },
-    { id: 4, rank: 4, title: 'Fourth Place Post', likes: 800, shares: 250, comments: 80, reach: 6000, trend: 3 },
-    { id: 5, rank: 5, title: 'Fifth Place Post', likes: 700, shares: 200, comments: 70, reach: 5000, trend: -2 },
-  ] as const;
+  const fetchLeaderboardData = async (): Promise<readonly Post[]> => {
+    try {
+      const response = await fetch('https://pythonbackend-n73y.onrender.com/api/leaderboard');
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
+      }
+
+      const apiData = await response.json();
+      const parsedData = JSON.parse(apiData.response);
+
+      // Map the API response to the Post type structure
+      const formattedPosts: Post[] = parsedData.map((item: any, index: number) => ({
+        id: item['Tweet ID'],
+        rank: index + 1,
+        title: item['Tweet Text'],
+        likes: item.Favorites || 0,
+        shares: item.Retweets || 0,
+        followers: item.Followers, // Assuming no followers data in API
+        reach: item.Engagement || 0,
+        trend: 0, // Placeholder for trend calculation
+      }));
+
+      // return formattedPosts;
+      console.log(formattedPosts);
+      setPosts(formattedPosts);
+    } catch (error) {
+      console.error('Error fetching leaderboard data:', error);
+      return [];
+    }
+  };  
+  useEffect(() => {
+    fetchLeaderboardData();
+  }, []);
 
   const rankStyles: ReadonlyArray<RankStyle> = [
     { color: 'text-yellow-500', emoji: '👑', bgColor: 'bg-yellow-500/10' },
@@ -98,7 +126,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
   const getPostMetrics = (post: Post): ReadonlyArray<MetricData> => [
     { icon: ThumbsUp, value: post.likes, label: 'Likes', color: 'text-sky-500', trend: post.trend },
     { icon: Share2, value: post.shares, label: 'Shares', color: 'text-teal-500' },
-    { icon: MessageCircle, value: post.comments, label: 'Comments', color: 'text-yellow-500' },
+    { icon: MessageCircle, value: post.followers, label: 'Comments', color: 'text-yellow-500' },
     { icon: Eye, value: post.reach, label: 'Reach', color: 'text-fuchsia-300' },
   ] as const;
 
@@ -172,7 +200,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
                       </div>
                     </th>
                     <th className={`p-4 text-left ${textColor}`}>Post</th>
-                    {(['likes', 'shares', 'comments', 'reach'] as const).map((field) => (
+                    {(['likes', 'shares', 'followers', 'reach'] as const).map((field) => (
                       <th
                         key={field}
                         className={`p-4 text-right cursor-pointer ${textColor} hover:${cardBgColor}`}
@@ -215,7 +243,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
                       </td>
                       <td className={`p-4 text-right ${secondaryTextColor}`}>{post.likes.toLocaleString()}</td>
                       <td className={`p-4 text-right ${secondaryTextColor}`}>{post.shares.toLocaleString()}</td>
-                      <td className={`p-4 text-right ${secondaryTextColor}`}>{post.comments.toLocaleString()}</td>
+                      <td className={`p-4 text-right ${secondaryTextColor}`}>{post.followers.toLocaleString()}</td>
                       <td className={`p-4 text-right ${secondaryTextColor}`}>{post.reach.toLocaleString()}</td>
                     </tr>
                   ))}
