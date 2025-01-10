@@ -1,0 +1,8 @@
+astrapy
+pandas
+requests
+joblib
+scikit-learn
+flask
+flask_cors
+load_dotenv

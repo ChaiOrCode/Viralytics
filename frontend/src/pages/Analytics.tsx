@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import { BarChart, Clock, Lightbulb, TrendingUp, Heart, Share2, MessageCircle, ChartBarIncreasingIcon, Target } from 'lucide-react';
@@ -20,24 +20,33 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
   const borderColor = darkMode ? 'border-dark-primary/20' : 'border-light-primary/20';
   const cardBgColor = darkMode ? 'bg-dark-primary/10' : 'bg-light-primary/10';
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-      },
-      x: {
-        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+  const [insights, setInsights] = useState<Insight[]>([]);
+
+  useEffect(() => {
+    // Function to fetch insights
+    const fetchInsights = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/post-type", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: "Carousels" }), // Replace with the appropriate type if needed
+        });
+
+        const data = await response.json(); // Assuming the response is in JSON format
+        // Split the response into an array based on newlines
+        const insightsArray = data.response.split("\n");
+
+        // Store insights in an array
+        setInsights(insightsArray.map((line) => ({ data: [line] })));
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    },
-    plugins: {
-      legend: {
-        labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
-      }
-    }
-  };
+    };
+
+    fetchInsights();
+  }, []);
 
   const engagementData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -73,14 +82,59 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     ],
   };
 
-  const sentimentData = {
-    labels: ['Positive', 'Neutral', 'Negative'],
-    datasets: [
-      {
-        data: [60, 30, 10],
-        backgroundColor: ['#4CAF50', '#FFA000', '#F44336'],
+  const [sentimentData, setSentimentData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSentimentData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/sentiment-analysis", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tweet_id: "1876977156196045058" }), // Use the actual tweet_id
+        });
+
+        const data = await response.json();
+        
+        // Extracting the sentiment values
+        const sentiment = data.response.sentiment;
+        
+        // Setting the sentiment data for the chart
+        setSentimentData({
+          labels: ['Positive', 'Neutral', 'Negative'],
+          datasets: [
+            {
+              data: [sentiment.positive, sentiment.neutral, sentiment.negative],
+              backgroundColor: ['#4CAF50', '#FFA000', '#F44336'],
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching sentiment data:", error);
+      }
+    };
+
+    fetchSentimentData();
+  }, []);
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
       },
-    ],
+      x: {
+        ticks: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+      }
+    }
   };
 
   return (
@@ -132,23 +186,13 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                   <Lightbulb className={`mr-2 w-6 h-6 ${textColor}`} />
                   <h3 className={`text-lg font-medium ${textColor}`}>Content Insights</h3>
                 </div>
-                <ul className={`mt-4 space-y-4 ${secondaryTextColor}`}>
-                  <li className="flex items-center p-3 bg-green-500 bg-opacity-10 rounded-lg">
-                    <TrendingUp className="mr-3 w-5 h-5 text-green-500" />
-                    <span>Video posts increased engagement by 25%</span>
-                  </li>
-                  <li className="flex items-center p-3 bg-red-500 bg-opacity-10 rounded-lg">
-                    <Heart className="mr-3 w-5 h-5 text-red-500" />
-                    <span>Posts with images get 2x more likes</span>
-                  </li>
-                  <li className="flex items-center p-3 bg-blue-500 bg-opacity-10 rounded-lg">
-                    <Share2 className="mr-3 w-5 h-5 text-blue-500" />
-                    <span>Threads receive 3x more shares</span>
-                  </li>
-                  <li className="flex items-center p-3 bg-yellow-500 bg-opacity-10 rounded-lg">
-                    <MessageCircle className="mr-3 w-5 h-5 text-yellow-500" />
-                    <span>Question posts generate 50% more comments</span>
-                  </li>
+                <ul className="mt-4 space-y-4 text-gray-600">
+                  {insights.map((insight, index) => (
+                    <li key={index} className="flex items-center p-3 bg-gray-100 rounded-lg mb-2">
+                      <TrendingUp className="w-5 h-5 mr-3 text-gray-500" />
+                      <span>{insight.data[0]}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -215,21 +259,25 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 </div>
               </div>
 
-              <div className={`p-6 rounded-xl border transition-transform duration-200 ${borderColor} ${cardBgColor} hover:scale-105`}>
-                <h3 className={`mb-4 text-lg font-medium ${textColor}`}>Sentiment Analysis</h3>
+              <div className={`p-6 rounded-xl border transition-transform duration-200 hover:scale-105`}>
+                <h3 className={`mb-4 text-lg font-medium`}>Sentiment Analysis</h3>
                 <div className="h-64">
-                  <Pie
-                    data={sentimentData}
-                    options={{
-                      ...chartOptions,
-                      plugins: {
-                        legend: {
-                          position: 'bottom',
-                          labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+                  {sentimentData ? (
+                    <Pie
+                      data={sentimentData}
+                      options={{
+                        ...chartOptions,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: { color: darkMode ? '#C8D5E2' : '#1A5885' }
+                          }
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    />
+                  ) : (
+                    <p>Loading sentiment data...</p>
+                  )}
                 </div>
               </div>
             </div>
