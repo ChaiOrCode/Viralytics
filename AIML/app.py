@@ -1,10 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS 
 
-from Functions import combined_flow_output_timestamp, run_flow_postAnalyzer, run_flow_contentSuggestor, run_flow_postType, run_flow_sentimentAnalysis, retrieveTweetComments
+from Functions import combined_flow_output_timestamp, run_flow_postAnalyzer, run_flow_contentSuggestor, run_flow_postType, run_flow_sentimentAnalysis, retrieveTweetComments, get_top5_posts
 app = Flask(__name__)
 
 CORS(app)
+
+@app.route('/api/leaderboard', methods=['GET']) 
+def api_get_top5_posts():
+    try:
+        response = get_top5_posts()
+        return jsonify({"response": response}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/timestamp', methods=['GET']) #called from button click : no data from frontend => just curr timestamp is analyzed for posting or not
 def api_combined_flow_output_timestamp():

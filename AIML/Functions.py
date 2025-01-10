@@ -157,6 +157,15 @@ def retrieveTweetComments(TWEET_ID = "1866869309277937937"):
         print(f"Error: {response.status_code}, {response.text}")
         return ""
 
+def get_top5_posts():
+    df = pd.read_csv('twitter_sentiment_dataset.csv')
+    df['Engagement'] = 0.4*df['Retweets'] + 0.4*df['Favorites'] + 0.2*df['Followers']
+    top_5_posts = df.nlargest(5, 'Engagement')
+    top_5_posts_json = top_5_posts.to_json(orient='records')
+    top_5_posts_dict = json.loads(top_5_posts_json)
+    res = json.dumps(top_5_posts_dict, indent=4)
+    return res
+
 def run_flow_sentimentAnalysis(message: str,) -> dict:
     api_url = f"{BASE_API_URL}/lf/{LANGFLOW_ID}/api/v1/run/{FLOW_ID_5}"
 
