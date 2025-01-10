@@ -78,7 +78,7 @@ const PostGenerator: React.FC<{
     if (!prompt) return;
     setLoading(true);
     try {
-      const response = await fetch("https://pythonbackend-n73y.onrender.com/api/content-suggestor", {
+      const response = await fetch("https://pythonbackend-n73y.onrender.com/api/post-analyzer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
