@@ -1,15 +1,12 @@
 document.getElementById("submitButton").addEventListener("click", async () => {
-    const timestamp = document.getElementById("timestampInput").value;
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "Loading...";
 
-    if (!timestamp) {
-        resultDiv.innerHTML = "Please select a date and time.";
-        return;
-    }
-
     try {
-        const response = await fetch(`https://pythonbackend-n73y.onrender.com/api/timestamp?timestamp=${encodeURIComponent(timestamp)}`, {
+        // Automatically use the current date and time
+        const currentTimestamp = new Date().toISOString();
+
+        const response = await fetch(`https://pythonbackend-n73y.onrender.com/api/timestamp?timestamp=${encodeURIComponent(currentTimestamp)}`, {
             method: "GET"
         });
 
@@ -38,6 +35,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
         resultDiv.innerHTML = `Error: ${error.message}`;
     }
 });
+
 
 document.getElementById("contentSuggestorButton").addEventListener("click", async () => {
     const contentInput = document.getElementById("contentInput").value;
