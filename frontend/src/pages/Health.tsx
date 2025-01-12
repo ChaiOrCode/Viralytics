@@ -1,13 +1,26 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { TrendingUp, Users, BarChart, Activity, Heart, MessageCircle, Target, Zap, Award } from 'lucide-react';
+import { TrendingUp, Users, BarChart, Activity, Heart, MessageCircle, Clock, Zap, Award } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 interface HealthProps {
   darkMode: boolean;
 }
+
+
+const formatDateTime = (dateTimeString: string) => {
+  const date = new Date(dateTimeString);
+  return date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  });
+};
 
 const Health: React.FC<HealthProps> = ({ darkMode }) => {
   const chartOptions = {
@@ -37,18 +50,18 @@ const Health: React.FC<HealthProps> = ({ darkMode }) => {
       tension: 0.4
     }]
   };
-
+  {/* <span className="text-sm font-medium">Last updated: {formatDateTime(new Date().toISOString())}</span> */ }
   const topPosts = [
-    { id: 1, title: 'Top Performing Post 1', likes: 1500, comments: 200, engagement: '12.5%' },
-    { id: 2, title: 'Runner-up Post', likes: 1200, comments: 150, engagement: '10.2%' },
-    { id: 3, title: 'Third Place Post', likes: 1000, comments: 100, engagement: '8.7%' }
+    { id: 1, title: 'Top Performing Post', likes: 161, comments: 21, engagement: '30.1%' },
+    { id: 2, title: 'Second Best Perfroming Post', likes: 78, comments: 11, engagement: '17.7%' },
+    { id: 3, title: 'Third Best Performing Post', likes: 12, comments: 2, engagement: '8.7%' }
   ];
 
   return (
     <div className="relative dark:bg-dark-background bg-light-background">
       {/* Background fill that extends up behind navbar */}
       <div className="absolute inset-x-0 -top-20 h-20 dark:bg-dark-background bg-light-background" />
-      
+
       {/* Main content with mt-20 preserved */}
       <div className="relative px-4 py-8 mt-20 min-h-screen dark:bg-dark-background bg-light-background bg-noise sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -58,18 +71,18 @@ const Health: React.FC<HealthProps> = ({ darkMode }) => {
               <h1 className="text-3xl font-bold dark:text-dark-primary text-light-tertiary">Account Health</h1>
             </div>
             <div className="flex gap-4 items-center dark:text-dark-secondary text-light-primary">
-              <Target className="w-5 h-5" />
-              <span className="text-sm font-medium">Last updated: Today, 2:30 PM</span>
+              <Clock className="w-5 h-5" />
+              <span className="text-sm font-medium">Last updated: {formatDateTime(new Date().toISOString())}</span>
             </div>
           </header>
 
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: TrendingUp, title: 'Total Reach', value: '1.2M', change: '+5% from last week' },
-              { icon: Users, title: 'Follower Growth', value: '+2,500', change: 'This week' },
-              { icon: BarChart, title: 'Engagement Rate', value: '4.7%', change: '+0.5% from last month' },
-              { icon: Activity, title: 'Post Frequency', value: '5.2', change: 'Posts per week' }
+              { icon: TrendingUp, title: 'Total Reach', value: '10.4K', change: '+8% from last week' },
+              { icon: Users, title: 'Follower Growth', value: '+126', change: 'This week' },
+              { icon: BarChart, title: 'Engagement Rate', value: '46%', change: '+3% from last month' },
+              { icon: Activity, title: 'Post Frequency', value: '4/6', change: 'Posts per week' }
             ].map((stat, index) => (
               <div key={index} className="p-6 rounded-xl border transition-all duration-200 dark:border-dark-primary/20 border-light-primary/20 dark:bg-dark-tertiary/10 bg-light-tertiary/10 hover:scale-105 hover:shadow-lg">
                 <div className="flex justify-between items-center mb-4">
@@ -92,7 +105,7 @@ const Health: React.FC<HealthProps> = ({ darkMode }) => {
               <div className="p-6 h-full rounded-xl border dark:border-dark-primary/20 border-light-primary/20 dark:bg-dark-tertiary/10 bg-light-tertiary/10">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-semibold dark:text-dark-primary text-light-tertiary">Engagement Trend</h2>
-                  <Zap className="w-5 h-5 dark:text-dark-primary text-light-tertiary" />
+                  <Zap className="w-8 h-8 rotate-12 dark:text-dark-primary text-light-tertiary" />
                 </div>
                 <div className="h-64">
                   <Line options={chartOptions} data={engagementData} />
@@ -104,13 +117,13 @@ const Health: React.FC<HealthProps> = ({ darkMode }) => {
             <div className="lg:col-span-4">
               <div className="p-6 h-full rounded-xl border dark:border-dark-primary/20 border-light-primary/20 dark:bg-dark-tertiary/10 bg-light-tertiary/10">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold dark:text-dark-primary text-light-tertiary">Goals Progress</h2>
-                  <Award className="w-5 h-5 dark:text-dark-primary text-light-tertiary" />
+                  <h2 className="text-2xl font-semibold dark:text-dark-primary text-light-tertiary">Goal Tracker</h2>
+                  <Award className="w-8 h-8 -rotate-12 dark:text-dark-primary text-light-tertiary" />
                 </div>
                 <div className="space-y-6">
                   {[
-                    { title: 'Follower Goal', current: 75, total: 100000, progress: 75000, color: 'dark:bg-dark-secondary bg-light-secondary' },
-                    { title: 'Engagement Rate', current: 60, total: 8, progress: 4.7, color: 'dark:bg-dark-primary bg-light-primary' },
+                    { title: 'Follower Goal', current: 75, total: 871, progress: 1000, color: 'dark:bg-dark-tertiary bg-light-tertiary' },
+                    { title: 'Engagement Rate', current: 60, total: 8, progress: 4, color: 'dark:bg-dark-tertiary bg-light-tertiary' },
                     { title: 'Post Frequency', current: 90, total: 6, progress: 5.2, color: 'dark:bg-dark-tertiary bg-light-tertiary' }
                   ].map((goal, index) => (
                     <div key={index}>

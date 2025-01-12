@@ -119,7 +119,7 @@ const PostGenerator: React.FC<{
       <button
         onClick={onGenerateClick}
         disabled={loading || prompt.length === 0}
-        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-tertiary dark:text-nav-dark hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-primary dark:text-nav-dark hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Zap className="w-4 h-4" />
         <span>{loading ? 'Generating...' : 'Generate Post Analysis'}</span>
@@ -130,7 +130,7 @@ const PostGenerator: React.FC<{
           <div className="w-full min-h-[100px] p-4 rounded-xl border
             bg-light-secondary/5 text-light-tertiary border-light-primary/10
             dark:bg-dark-secondary/5 dark:text-dark-primary dark:border-dark-primary/10">
-            {generatedPost.response}
+            {JSON.parse(generatedPost.response).explanation}
           </div>
           <button
             onClick={handleCopy}
@@ -193,7 +193,7 @@ const ContentSuggestion: React.FC = () => {
       <button
         onClick={fetchSuggestions}
         disabled={loading || !suggestion.trim()}
-        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-primary dark:text-nav-light hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex gap-2 justify-center items-center px-4 py-2 w-full font-medium rounded-lg transition duration-300 bg-light-tertiary text-nav-light dark:bg-dark-primary dark:text-nav-dark hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Zap className="w-4 h-4" />
         <span>{loading ? 'Loading...' : 'Get Content Suggestions'}</span>

@@ -49,6 +49,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
   const hoverBgColor = darkMode ? 'hover:bg-dark-primary/20' : 'hover:bg-light-primary/20';
   const [posts, setPosts] = useState<Post[]>([]);
 
+  // @ts-ignore 
   const fetchLeaderboardData = async (): Promise<readonly Post[]> => {
     try {
       const response = await fetch('https://pythonbackend-n73y.onrender.com/api/leaderboard');
@@ -144,7 +145,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
           </div>
 
           <section className="mb-12">
-            <h2 className={`mb-6 text-2xl font-semibold ${textColor}`}>Top Performers</h2>
+            <h2 className={`mb-3 text-2xl font-semibold ${textColor}`}>Top Performers</h2>
+            <h6 className={`mb-6 text-lg font-semibold ${textColor}`}>Data Might Take Few Seconds to Load...</h6>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {sortedPosts.slice(0, 3).map((post) => (
                 <div
@@ -181,7 +183,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ darkMode }) => {
           </section>
 
           <section>
-            <h2 className={`mb-6 text-2xl font-semibold ${textColor}`}>Full Leaderboard</h2>
+            <h2 className={`mb-3 text-2xl font-semibold ${textColor}`}>Full Leaderboard </h2>
+            <h6 className={`mb-6 text-lg font-semibold ${textColor}`}>Data Might Take Few Seconds to Load...</h6>
             <div className={`overflow-hidden rounded-xl border ${borderColor} ${cardBgColor}`}>
               <table className="w-full">
                 <thead>

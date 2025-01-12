@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
-import { BarChart, Clock, Lightbulb, TrendingUp, Heart, Share2, MessageCircle, ChartBarIncreasingIcon, Target } from 'lucide-react';
+import { BarChart, Clock, Lightbulb, TrendingUp, ChartBarIncreasingIcon } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Title, Tooltip, Legend);
 
 interface AnalyticsProps {
   darkMode: boolean;
 }
+
+const formatDateTime = (dateTimeString: string) => {
+  const date = new Date(dateTimeString);
+  return date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  });
+};
 
 const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
   const [timeFilter, setTimeFilter] = useState('today');
@@ -19,6 +31,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
   const secondaryTextColor = darkMode ? 'text-dark-secondary' : 'text-light-primary';
   const borderColor = darkMode ? 'border-dark-primary/20' : 'border-light-primary/20';
   const cardBgColor = darkMode ? 'bg-dark-primary/10' : 'bg-light-primary/10';
+
+  // @ts-ignore 
 
   const [insights, setInsights] = useState<Insight[]>([]);
 
@@ -39,6 +53,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
         const insightsArray = data.response.split("\n");
 
         // Store insights in an array
+        // @ts-ignore 
         setInsights(insightsArray.map((line) => ({ data: [line] })));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -96,10 +111,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
         });
 
         const data = await response.json();
-        
+
         // Extracting the sentiment values
         const sentiment = data.response.sentiment;
-        
+
         // Setting the sentiment data for the chart
         setSentimentData({
           labels: ['Positive', 'Neutral', 'Negative'],
@@ -141,7 +156,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
     <div className={`relative ${bgColor}`}>
       {/* Background fill that extends up behind navbar */}
       <div className={`absolute inset-x-0 -top-20 h-20 ${bgColor}`} />
-      
+
       {/* Main content with mt-20 preserved */}
       <div className={`relative px-4 py-8 mt-20 min-h-screen ${bgColor} sm:px-6 lg:px-8`}>
         <div className="mx-auto max-w-7xl">
@@ -152,8 +167,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
               <h1 className={`text-3xl font-bold ${textColor}`}>Analytics Dashboard</h1>
             </div>
             <div className={`flex gap-4 items-center ${secondaryTextColor}`}>
-              <Target className="w-5 h-5" />
-              <span className="text-sm font-medium">Last updated: Today, 2:30 PM</span>
+              <Clock className="w-5 h-5" />
+              <span className="text-sm font-medium">Last updated: {formatDateTime(new Date().toISOString())}</span>
             </div>
           </header>
 
@@ -188,8 +203,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ darkMode }) => {
                 </div>
                 <ul className="mt-4 space-y-4 text-gray-600">
                   {insights.map((insight, index) => (
-                    <li key={index} className="flex items-center p-3 bg-gray-100 rounded-lg mb-2">
-                      <TrendingUp className="w-5 h-5 mr-3 text-gray-500" />
+                    <li key={index} className="flex items-center p-3 mb-2 bg-gray-100 rounded-lg">
+                      <TrendingUp className="mr-3 w-5 h-5 text-gray-500" />
                       <span>{insight.data[0]}</span>
                     </li>
                   ))}
